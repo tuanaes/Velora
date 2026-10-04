@@ -1,0 +1,734 @@
+<!doctype html>
+<html lang="ru">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<title>Velora — Персонажи с искусственным интеллектом</title>
+<style>
+*{box-sizing:border-box}html,body{margin:0;background:#09090d;color:#f7f4fb;font-family:Inter,system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif}
+body{min-height:100vh}.app{max-width:1180px;margin:auto;padding:20px 20px 96px}
+header{display:flex;align-items:center;justify-content:space-between;gap:16px;padding:8px 0 24px}
+.logo{font-size:27px;font-weight:800;letter-spacing:-1px}.logo span{color:#a875ff}
+.icon{width:42px;height:42px;border:1px solid #25232e;background:#121119;border-radius:14px;color:#fff;font-size:18px}
+.hero{padding:28px 0 20px}.eyebrow{color:#a875ff;font-weight:700;font-size:13px;text-transform:uppercase;letter-spacing:1.5px}
+h1{font-size:clamp(36px,7vw,62px);line-height:.98;margin:10px 0 14px;letter-spacing:-2.5px;max-width:760px}
+.hero p{color:#a7a3b0;max-width:620px;line-height:1.6;margin:0}
+.search{display:flex;gap:10px;margin:26px 0}.search input{flex:1;background:#121119;border:1px solid #282530;border-radius:16px;padding:15px 17px;color:#fff;outline:none;font-size:15px}.search button{border:0;border-radius:15px;padding:0 19px;background:#a875ff;color:#100b18;font-weight:800}
+.tabs{display:flex;gap:8px;overflow:auto;padding:3px 0 18px}.tab{white-space:nowrap;border:1px solid #282530;background:#111016;color:#aaa5b2;padding:10px 15px;border-radius:999px}.tab.active{background:#efe7ff;color:#191020;border-color:#efe7ff}
+.section-head{display:flex;align-items:center;justify-content:space-between;margin:8px 0 15px}.section-head h2{font-size:21px;margin:0}.muted{color:#817c89;font-size:13px}
+.grid{display:grid;grid-template-columns:repeat(4,1fr);gap:14px}
+.card{background:#111016;border:1px solid #25222d;border-radius:20px;overflow:hidden;cursor:pointer;transition:.18s transform,.18s border-color}.card:hover{transform:translateY(-3px);border-color:#514064}
+.avatar{aspect-ratio:1/1;background:linear-gradient(135deg,#241b32,#16141c);display:grid;place-items:center;font-size:64px;position:relative}
+.cardstats{position:absolute;left:12px;top:11px;z-index:2;color:#fff;font-size:12px;font-weight:800;text-shadow:0 2px 8px #000;background:rgba(0,0,0,.28);padding:4px 7px;border-radius:9px;backdrop-filter:blur(5px)}
+.fav{position:absolute;right:10px;top:9px;z-index:3;width:34px;height:34px;border:0;border-radius:50%;background:rgba(20,18,25,.55);color:#fff;font-size:25px;line-height:1;display:grid;place-items:center;text-shadow:0 2px 8px #000;cursor:pointer;transition:.15s}
+.fav:hover{transform:scale(1.08);background:rgba(20,18,25,.75)}
+.fav.saved{color:#ff4fc7;background:rgba(255,79,199,.16);text-shadow:0 0 12px rgba(255,79,199,.7)}
+
+.online{position:absolute;right:11px;top:11px;width:9px;height:9px;border-radius:50%;background:#70e1a1;box-shadow:0 0 12px #70e1a1}
+.search{position:relative}.searchIcon{position:absolute;left:16px;top:11px;font-size:26px;color:#817c89;pointer-events:none}.search input{padding-left:45px}
+.filterbar{display:flex;gap:10px;margin:0 0 10px}.filterBtn,.filterbar select{background:#121119;border:1px solid #292631;color:#eee;border-radius:14px;padding:11px 15px;font-size:14px}.filterBtn{cursor:pointer}.filterbar select{margin-left:auto;min-width:160px}
+.tagPanel{display:none;gap:7px;flex-wrap:wrap;padding:4px 0 13px}.tagPanel.open{display:flex}.tagPanel button{border:1px solid #2c2734;background:#15121a;color:#aaa5b2;border-radius:10px;padding:8px 11px}.tagPanel button.selected{background:#a875ff;color:#120b18;border-color:#a875ff}
+.avatar{overflow:hidden}.avatarArt{width:100%;height:100%;display:grid;place-items:center;font-size:70px;background:radial-gradient(circle at 50% 25%,#3d2858,#17131e 72%)}.avatarArt.kael{background:radial-gradient(circle at 70% 20%,#5b3320,#17131e 70%)}.avatarArt.aria{background:radial-gradient(circle at 50% 20%,#243d58,#17131e 72%)}.avatarArt.nova{background:radial-gradient(circle at 40% 25%,#193d56,#17131e 72%)}
+.card:hover .avatarArt{transform:scale(1.03);transition:.25s}.avatarArt{transition:.25s}
+.exploreHero{background:linear-gradient(135deg,#17121f,#21172b);border:1px solid #30243b;border-radius:22px;padding:24px;display:flex;justify-content:space-between;align-items:center;margin-bottom:18px}.exploreHero h2{font-size:27px;margin:7px 0}.exploreHero p{color:#8f8998;margin:0}.exploreHero>span{font-size:54px;color:#b67cff}
+.categoryGrid{display:grid;grid-template-columns:repeat(2,1fr);gap:12px}.category{border:1px solid #292531;background:#121119;border-radius:18px;text-align:left;padding:18px;color:#fff}.category b{display:block;font-size:16px}.category span{display:block;color:#817c89;font-size:12px;margin-top:5px}
+.miniList{display:grid;gap:8px}.miniList>div{display:flex;align-items:center;gap:12px;background:#111016;border:1px solid #25222d;padding:10px;border-radius:15px;cursor:pointer}.miniList>div span:last-child{margin-left:auto;color:#817c89;font-size:12px}.miniAvatar{width:38px;height:38px;border-radius:12px;background:#241a31;display:grid;place-items:center}
+.profileInfo{flex:1}.profileStats{display:flex;gap:14px;margin-top:12px;color:#817c89;font-size:11px}.profileStats b{color:#ddd}
+.favoritesGrid{display:grid;grid-template-columns:repeat(2,1fr);gap:10px}.favItem{display:flex;align-items:center;gap:10px;background:#111016;border:1px solid #25222d;border-radius:16px;padding:10px;cursor:pointer}.favItem .miniAvatar{font-size:20px}.favItem small{display:block;color:#817c89;margin-top:2px}
+.backBtn{border:0;background:transparent;color:#a7a3b0;padding:5px 0 16px;font-size:14px}.characterHero{display:grid;grid-template-columns:minmax(250px,42%) 1fr;gap:24px}.characterCover{aspect-ratio:1/1;max-height:500px;border-radius:24px;background:linear-gradient(135deg,#2a1c3a,#131119);border:1px solid #32283d;display:grid;place-items:center;position:relative;overflow:hidden}.characterCover>div{font-size:120px}.detailFav{position:absolute;right:15px;top:15px;width:44px;height:44px;border:0;border-radius:50%;background:rgba(12,10,16,.65);color:#fff;font-size:28px}.detailFav.saved{color:#ff4fc7}.onlineLabel{color:#70e1a1;font-size:12px}.characterInfo h1{font-size:46px;margin:8px 0}.characterInfo p{color:#a09aa8;line-height:1.6}.detailTags{display:flex;gap:7px;flex-wrap:wrap;margin:15px 0}.detailTags span{background:#1a1620;color:#bcb4c6;border:1px solid #2a2531;padding:7px 9px;border-radius:9px;font-size:11px}.detailStats{display:flex;gap:18px;color:#8e8996;margin:15px 0 20px}.bigButton{width:100%;padding:15px;font-size:15px}.characterAbout{margin-top:20px;background:#111016;border:1px solid #25222d;border-radius:20px;padding:18px}.characterAbout p{color:#8e8996;line-height:1.6}
+.modal{position:fixed;inset:0;background:rgba(0,0,0,.68);backdrop-filter:blur(10px);display:none;align-items:center;justify-content:center;padding:18px;z-index:20}.modal.open{display:flex}.modalCard{width:min(440px,100%);background:#111016;border:1px solid #302a38;border-radius:24px;padding:24px;position:relative;box-shadow:0 25px 80px rgba(0,0,0,.55)}.modalCard h2{font-size:30px;margin:8px 0}.modalCard label{display:block;color:#aaa5b2;font-size:12px;margin-top:14px}.modalCard input{display:block;width:100%;margin-top:7px;background:#17151d;border:1px solid #2b2632;border-radius:13px;padding:13px;color:#fff;outline:0;font-size:14px}.modalClose{position:absolute;right:13px;top:11px;background:transparent;border:0;color:#8d8795;font-size:28px}.linkButton{border:0;background:transparent;color:#b98aff;margin-top:12px;width:100%;padding:9px}.authMessage{min-height:20px;color:#ff8ccf;font-size:12px;text-align:center;margin-top:8px}
+
+@media(max-width:650px){.characterHero{grid-template-columns:1fr;gap:16px}.characterCover{max-height:none}.characterCover>div{font-size:90px}.characterInfo h1{font-size:38px}.profile{align-items:flex-start}.profile .secondary{width:100%}}
+
+.cardbody{padding:14px}.name{font-weight:750;font-size:16px}.desc{color:#898491;font-size:12px;line-height:1.45;margin-top:5px}.tags{display:flex;gap:5px;flex-wrap:wrap;margin-top:10px}.tag{font-size:10px;color:#aaa5b2;background:#191720;padding:5px 7px;border-radius:7px}
+.nav{position:fixed;left:50%;bottom:14px;transform:translateX(-50%);width:min(560px,calc(100% - 24px));background:rgba(18,17,25,.94);border:1px solid #2a2632;backdrop-filter:blur(18px);border-radius:20px;padding:8px;display:grid;grid-template-columns:repeat(4,1fr);z-index:5}
+.nav button{border:0;background:transparent;color:#817c89;padding:9px 5px;border-radius:13px}.nav button.active{background:#211a2b;color:#c79cff}.nav b{display:block;font-size:11px;margin-top:4px}
+.page{display:none}.page.active{display:block}.view{padding-top:8px}
+.profile{background:#111016;border:1px solid #25222d;border-radius:22px;padding:24px;display:flex;gap:18px;align-items:center}.profilepic{width:82px;height:82px;border-radius:24px;background:#241b32;display:grid;place-items:center;font-size:38px}
+.primary{border:0;background:#a875ff;color:#100b18;font-weight:800;border-radius:13px;padding:12px 16px}.secondary{border:1px solid #302b38;background:#16131b;color:#eee;border-radius:13px;padding:12px 16px}
+.chat{height:65vh;min-height:440px;border:1px solid #25222d;background:#0f0e14;border-radius:22px;display:flex;flex-direction:column;overflow:hidden}.chathead{padding:15px 18px;border-bottom:1px solid #25222d;display:flex;gap:12px;align-items:center}.mini{width:42px;height:42px;border-radius:13px;background:#261c35;display:grid;place-items:center;font-size:22px}.messages{flex:1;padding:18px;overflow:auto;display:flex;flex-direction:column;gap:10px}.msg{max-width:78%;padding:11px 13px;border-radius:15px;background:#191720;color:#ddd;line-height:1.45;font-size:14px}.msg.me{align-self:flex-end;background:#a875ff;color:#160d20}.composer{display:flex;gap:8px;padding:12px;border-top:1px solid #25222d}.composer input{flex:1;background:#17151d;border:1px solid #292531;border-radius:13px;padding:12px;color:#fff;outline:0}
+.empty{padding:35px;text-align:center;color:#85808d;background:#111016;border:1px dashed #2b2732;border-radius:20px}
+@media(max-width:850px){.grid{grid-template-columns:repeat(2,1fr)}}
+@media(max-width:520px){.app{padding:15px 14px 95px}header{padding-bottom:10px}.grid{gap:10px}.cardbody{padding:11px}.avatar{font-size:52px}h1{font-size:42px}.search button{padding:0 14px}.profile{align-items:flex-start;flex-wrap:wrap}}
+
+.profileWrap{display:grid;gap:16px}
+.profileTop{background:linear-gradient(135deg,#15111d,#111016);border:1px solid #30283a;border-radius:24px;padding:22px;display:flex;gap:18px;align-items:center}
+.profilepic{width:92px;height:92px;border-radius:28px;background:radial-gradient(circle at 35% 25%,#5b397c,#241b32 68%);display:grid;place-items:center;font-size:42px;flex:none;box-shadow:0 12px 35px rgba(0,0,0,.25)}
+.profileMain{min-width:0;flex:1}.profileNameRow{display:flex;align-items:center;gap:9px;flex-wrap:wrap}.profileMain h2{font-size:28px;letter-spacing:-.7px}.accountBadge{font-size:10px;color:#d7baff;background:#241936;border:1px solid #44305d;border-radius:999px;padding:5px 8px}.profileEmail{margin-top:4px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.profileActions{display:flex;gap:8px;margin-top:14px;flex-wrap:wrap}.profileActions button{cursor:pointer}
+.profileStatsGrid{display:grid;grid-template-columns:repeat(3,1fr);gap:10px}.statCard{background:#111016;border:1px solid #25222d;border-radius:18px;padding:16px}.statCard b{display:block;font-size:24px;color:#f7f4fb}.statCard span{display:block;color:#817c89;font-size:11px;margin-top:4px}
+.profileSection{background:#111016;border:1px solid #25222d;border-radius:22px;padding:18px}.profileSectionHead{display:flex;align-items:center;justify-content:space-between;margin-bottom:13px}.profileSectionHead h3{margin:0;font-size:17px}
+.profileNote{color:#817c89;font-size:12px;line-height:1.5;margin:0}.editModalActions{display:flex;gap:8px;margin-top:16px}.editModalActions button{flex:1}
+@media(max-width:520px){.profileTop{align-items:flex-start}.profilepic{width:76px;height:76px;font-size:34px}.profileMain h2{font-size:23px}.profileStatsGrid{gap:7px}.statCard{padding:13px 10px}.statCard b{font-size:21px}.profileActions button{padding:10px 12px}}
+
+
+.fav{z-index:3;cursor:pointer;transition:.18s transform,.18s color,.18s background}.fav.saved{color:#ffcc4d;background:rgba(24,18,30,.9)}.fav:active{transform:scale(.9)}
+.favLoginHint{font-size:11px;color:#8d8795;margin-top:6px}
+
+
+.chatStatus{font-size:11px;color:#70e1a1;margin-top:2px}.chatBack{cursor:pointer}.chatEmpty{margin:auto;color:#77717f;text-align:center;padding:30px;line-height:1.5}.msgTime{display:block;font-size:9px;opacity:.55;margin-top:5px}.chatError{padding:8px 14px;color:#ff9b9b;font-size:11px;text-align:center}.composer button:disabled{opacity:.45;cursor:not-allowed}
+
+.typing{opacity:.7;font-style:italic}
+</style>
+</head>
+<body>
+<div class="app">
+<header><div class="logo">Vel<span>ora</span></div><button class="icon" onclick="showPage('profile')">◉</button></header>
+
+<main id="home" class="page active">
+<section class="hero">
+  <div class="eyebrow">Платформа персонажей</div>
+  <h1>Найди персонажа.<br>Начни свою историю.</h1>
+  <p>Исследуй персонажей, находи новых собеседников и начинай собственные истории в Velora.</p>
+  <div class="search"><span class="searchIcon">⌕</span><input id="search" placeholder="Поиск персонажей..." oninput="filterCards()"><button onclick="document.getElementById('search').focus()">Найти</button></div>
+</section>
+<div class="filterbar">
+  <button class="filterBtn" onclick="toggleTags()">☷ &nbsp; Теги</button>
+  <select id="sortSelect" onchange="sortCards(this.value)">
+    <option value="popular">Популярные</option>
+    <option value="messages">По сообщениям</option>
+    <option value="new">Новые</option>
+  </select>
+</div>
+<div class="tabs">
+  <button class="tab active" onclick="setCategory(this,'all')">Все</button>
+  <button class="tab" data-category="anime" onclick="setCategory(this,'anime')">Аниме</button>
+  <button class="tab" data-category="fantasy" onclick="setCategory(this,'fantasy')">Фэнтези</button>
+  <button class="tab" data-category="scifi" onclick="setCategory(this,'scifi')">Фантастика</button>
+  <button class="tab" data-category="roleplay" onclick="setCategory(this,'roleplay')">Ролевые</button>
+</div>
+<div id="tagPanel" class="tagPanel">
+  <button data-filter="calm" onclick="toggleTagFilter(this,'calm')">Спокойный</button>
+  <button data-filter="adventure" onclick="toggleTagFilter(this,'adventure')">Приключения</button>
+  <button data-filter="mystery" onclick="toggleTagFilter(this,'mystery')">Тайна</button>
+  <button data-filter="smart" onclick="toggleTagFilter(this,'smart')">Умный</button>
+  <button data-filter="story" onclick="toggleTagFilter(this,'story')">История</button>
+</div>
+<div class="section-head"><h2>Популярные персонажи</h2><span class="muted" id="resultCount">4 персонажа</span></div>
+<div class="grid" id="characterGrid">
+  <div class="card" data-name="луна" data-category="roleplay" data-tags="mystery calm story" data-messages="3769200" data-new="4" onclick="openCharacter('Луна','🌙','Загадочная собеседница с мягким характером.','3769.2K','Тайна · Спокойный · История')">
+    <div class="avatar"><div class="avatarArt luna">🌙</div><div class="cardstats">💬 3,77 млн</div><button class="fav" data-fav-id="луна" aria-label="Добавить в избранное" onclick="toggleFavorite(event,\'луна\')">☆</button><i class="online"></i></div>
+    <div class="cardbody"><div class="name">Луна</div><div class="desc">Загадочная собеседница с мягким характером.</div><div class="tags"><span class="tag">Тайна</span><span class="tag">Спокойный</span></div></div>
+  </div>
+  <div class="card" data-name="каэль" data-category="fantasy" data-tags="adventure story" data-messages="464300" data-new="3" onclick="openCharacter('Каэль','⚔️','Странник из мира, где магия стала частью жизни.','464.3K','Фэнтези · Приключения')">
+    <div class="avatar"><div class="avatarArt kael">⚔️</div><div class="cardstats">💬 464,3 тыс.</div><button class="fav" data-fav-id="каэль" aria-label="Добавить в избранное" onclick="toggleFavorite(event,\'каэль\')">☆</button></div>
+    <div class="cardbody"><div class="name">Каэль</div><div class="desc">Странник из мира, где магия стала частью жизни.</div><div class="tags"><span class="tag">Фэнтези</span><span class="tag">Приключения</span></div></div>
+  </div>
+  <div class="card" data-name="ария" data-category="roleplay" data-tags="calm smart" data-messages="335400" data-new="1" onclick="openCharacter('Ария','🎧','Музыкантка, которая всегда найдёт тему для разговора.','335.4K','Музыка · Спокойный · Дружелюбный')">
+    <div class="avatar"><div class="avatarArt aria">🎧</div><div class="cardstats">💬 335,4 тыс.</div><button class="fav" data-fav-id="ария" aria-label="Добавить в избранное" onclick="toggleFavorite(event,\'ария\')">☆</button><i class="online"></i></div>
+    <div class="cardbody"><div class="name">Ария</div><div class="desc">Музыкантка, которая всегда найдёт тему для разговора.</div><div class="tags"><span class="tag">Музыка</span><span class="tag">Дружелюбный</span></div></div>
+  </div>
+  <div class="card" data-name="нова" data-category="scifi" data-tags="smart story" data-messages="671100" data-new="2" onclick="openCharacter('Нова','🚀','Навигатор космического корабля с острым умом.','671.1K','Фантастика · Умный · История')">
+    <div class="avatar"><div class="avatarArt nova">🚀</div><div class="cardstats">💬 671,1 тыс.</div><button class="fav" data-fav-id="нова" aria-label="Добавить в избранное" onclick="toggleFavorite(event,\'нова\')">☆</button></div>
+    <div class="cardbody"><div class="name">Нова</div><div class="desc">Навигатор космического корабля с острым умом.</div><div class="tags"><span class="tag">Фантастика</span><span class="tag">Умный</span></div></div>
+  </div>
+</div>
+<div id="noResults" class="empty" style="display:none">Ничего не найдено. Попробуй изменить поиск или фильтры.</div>
+</main>
+<main id="explore" class="page view">
+<div class="section-head"><h2>Поиск</h2><span class="muted">Каталог Velora</span></div>
+<div class="exploreHero"><div><div class="eyebrow">Открой новые истории</div><h2>Найди своего персонажа</h2><p>Исследуй миры, жанры и характеры.</p></div><span>✦</span></div>
+<div class="categoryGrid">
+  <button class="category" onclick="goHomeCategory('anime')"><b>🎌 Аниме</b><span>Аниме и манга</span></button>
+  <button class="category" onclick="goHomeCategory('fantasy')"><b>🧙 Фэнтези</b><span>Магия и приключения</span></button>
+  <button class="category" onclick="goHomeCategory('scifi')"><b>🚀 Фантастика</b><span>Космос и технологии</span></button>
+  <button class="category" onclick="goHomeCategory('roleplay')"><b>🎭 Ролевые</b><span>Сюжетные диалоги</span></button>
+</div>
+<div class="section-head" style="margin-top:28px"><h2>В тренде</h2><span class="muted">За последние 7 дней</span></div>
+<div class="miniList">
+  <div onclick="openCharacter('Луна','🌙','Загадочная собеседница с мягким характером.','3769.2K','Тайна · Спокойный · История')"><span class="miniAvatar">🌙</span><b>Луна</b><span>💬 3,77 млн</span></div>
+  <div onclick="openCharacter('Нова','🚀','Навигатор космического корабля с острым умом.','671.1K','Фантастика · Умный · История')"><span class="miniAvatar">🚀</span><b>Нова</b><span>💬 671,1 тыс.</span></div>
+</div>
+</main>
+<main id="create" class="page view"><div class="section-head"><h2>Создать персонажа</h2></div><div class="empty">Конструктор персонажей подключим следующим этапом.<br><br><button class="primary" onclick="alert('Конструктор — следующий этап')">Создать персонажа</button></div></main>
+
+<main id="profile" class="page view">
+ <div class="section-head"><h2>Профиль</h2><span class="muted" id="profileStatus">Гость</span></div>
+
+ <div id="guestProfile" class="profile">
+   <div class="profilepic">👤</div>
+   <div class="profileInfo">
+     <h2 style="margin:0 0 5px">Гость</h2>
+     <div class="muted">Войди или создай аккаунт, чтобы сохранять прогресс и историю.</div>
+   </div>
+   <button class="secondary" onclick="openAuth()">Войти</button>
+ </div>
+
+ <div id="userProfile" class="profileWrap" style="display:none">
+   <section class="profileTop">
+     <div class="profilepic" id="profileAvatar">👤</div>
+     <div class="profileMain">
+       <div class="profileNameRow">
+         <h2 style="margin:0" id="profileName">Пользователь</h2>
+         <span class="accountBadge">АККАУНТ</span>
+       </div>
+       <div class="muted profileEmail" id="profileEmail"></div>
+       <div class="profileActions">
+         <button class="secondary" onclick="openEditProfile()">Изменить профиль</button>
+         <button class="secondary" id="authButton" onclick="logout()">Выйти</button>
+       </div>
+     </div>
+   </section>
+
+   <section class="profileStatsGrid">
+     <div class="statCard"><b id="favCount">0</b><span>Избранных</span></div>
+     <div class="statCard"><b id="chatCount">0</b><span>Чатов</span></div>
+     <div class="statCard"><b id="characterCount">0</b><span>Персонажей</span></div>
+   </section>
+
+   <section class="profileSection">
+     <div class="profileSectionHead"><h3>⭐ Избранное</h3><span class="muted">Сохранённые персонажи</span></div>
+     <div id="favoritesList" class="favoritesGrid"></div>
+     <div id="favoritesEmpty" class="empty">Здесь появятся персонажи, которых ты сохранил.</div>
+   </section>
+
+   <section class="profileSection">
+     <div class="profileSectionHead"><h3>Аккаунт</h3></div>
+     <p class="profileNote">Почта используется для входа в Velora. Имя пользователя можно изменить в любой момент.</p>
+   </section>
+ </div>
+ </main>
+
+ <div id="editProfileModal" class="modal" aria-hidden="true">
+   <div class="modalCard">
+     <button class="modalClose" onclick="closeEditProfile()">×</button>
+     <div class="eyebrow">АККАУНТ VELORA</div>
+     <h2>Изменить профиль</h2>
+     <p class="muted">Обнови имя, которое будет отображаться в Velora.</p>
+     <label>Имя пользователя<input id="editUsername" maxlength="32" autocomplete="nickname" placeholder="Например, Луна"></label>
+     <div class="editModalActions">
+       <button class="secondary" onclick="closeEditProfile()">Отмена</button>
+       <button class="primary" onclick="saveProfile()">Сохранить</button>
+     </div>
+     <div id="editProfileMessage" class="authMessage"></div>
+   </div>
+ </div>
+
+ <div id="authModal" class="modal" aria-hidden="true">
+  <div class="modalCard">
+    <button class="modalClose" onclick="closeAuth()">×</button>
+    <div class="eyebrow">АККАУНТ VELORA</div>
+    <h2 id="authTitle">Вход</h2>
+    <p class="muted" id="authSubtitle">Войди, чтобы сохранять избранное и историю.</p>
+    <label>Почта<input id="authEmail" type="email" autocomplete="email" placeholder="Введите почту"></label>
+    <label>Пароль<input id="authPassword" type="password" autocomplete="current-password" placeholder="Минимум 6 символов"></label>
+    <label id="usernameWrap" style="display:none">Имя пользователя<input id="authUsername" autocomplete="nickname" placeholder="Например, Луна"></label>
+    <button class="primary bigButton" id="authSubmit" onclick="submitAuth()">Войти</button>
+    <button class="linkButton" id="authSwitch" onclick="toggleAuthMode()">Нет аккаунта? Создать</button>
+    <div id="authMessage" class="authMessage"></div>
+  </div>
+</div>
+<main id="character" class="page view">
+<button class="backBtn" onclick="showPage('home')">← Назад</button>
+<div class="characterHero">
+  <div class="characterCover"><div id="characterBigAvatar">🌙</div><button id="detailFav" class="detailFav" onclick="toggleDetailFavorite()">☆</button></div>
+  <div class="characterInfo">
+    <div class="onlineLabel">● Онлайн</div><h1 id="characterTitle">Луна</h1><p id="characterDescription">Загадочная собеседница с мягким характером.</p>
+    <div class="detailTags" id="characterTags"></div>
+    <div class="detailStats"><span>💬 <b id="characterMessages">3769.2K</b></span><span>♡ <b id="characterFavs">0</b></span></div>
+    <button class="primary bigButton" onclick="startCharacterChat()">Начать чат</button>
+  </div>
+</div>
+<div class="characterAbout"><h2>О персонаже</h2><p>Персонаж для свободных сюжетных диалогов. Здесь позже будет полное описание, приветственное сообщение и дополнительные параметры автора.</p></div>
+</main>
+
+<main id="chat" class="page view">
+ <button class="backBtn chatBack" onclick="showPage('character')">← К персонажу</button>
+ <div class="chat">
+   <div class="chathead">
+     <div class="mini" id="chatAvatar">🌙</div>
+     <div><b id="chatName">Персонаж</b><div class="chatStatus">● онлайн</div></div>
+   </div>
+   <div class="messages" id="messages"><div class="chatEmpty">Загрузка истории…</div></div>
+   <div id="chatError" class="chatError" style="display:none"></div>
+   <div class="composer">
+     <input id="chatInput" autocomplete="off" placeholder="Напиши сообщение..." onkeydown="if(event.key==='Enter')sendMessage()">
+     <button id="sendButton" class="primary" onclick="sendMessage()">➤</button>
+   </div>
+ </div>
+ </main>
+</div>
+
+<nav class="nav">
+<button class="active" data-page="home" onclick="showPage('home')">⌂<b>Главная</b></button>
+<button data-page="explore" onclick="showPage('explore')">◈<b>Поиск</b></button>
+<button data-page="create" onclick="showPage('create')">＋<b>Создать</b></button>
+<button data-page="profile" onclick="showPage('profile')">◉<b>Профиль</b></button>
+</nav>
+
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script src="supabase-config.js"></script>
+<script>
+function showPage(id){
+ document.querySelectorAll('.page').forEach(p=>p.classList.remove('active'));
+ const el=document.getElementById(id); if(el) el.classList.add('active');
+ document.querySelectorAll('.nav button').forEach(b=>b.classList.toggle('active',b.dataset.page===id));
+ window.scrollTo(0,0);
+}
+let currentChatId = null;
+let currentChatCharacterId = null;
+
+function formatChatTime(value){
+  if(!value)return '';
+  try{
+    return new Date(value).toLocaleTimeString('ru-RU',{hour:'2-digit',minute:'2-digit'});
+  }catch(e){return '';}
+}
+
+function renderChatMessages(rows){
+  const box=document.getElementById('messages');
+  box.innerHTML='';
+  if(!rows||!rows.length){
+    box.innerHTML='<div class="chatEmpty">История пуста.<br>Напиши первое сообщение.</div>';
+    return;
+  }
+  rows.forEach(row=>{
+    const el=document.createElement('div');
+    el.className='msg'+(row.role==='user'?' me':'');
+    el.textContent=row.content||'';
+    if(row.created_at){
+      const time=document.createElement('span');
+      time.className='msgTime';
+      time.textContent=formatChatTime(row.created_at);
+      el.appendChild(time);
+    }
+    box.appendChild(el);
+  });
+  box.scrollTop=box.scrollHeight;
+}
+
+async function getOrCreateChat(characterId){
+  const existing=await supabaseClient.from('chats')
+    .select('id')
+    .eq('user_id',currentUser.id)
+    .eq('character_id',characterId)
+    .order('created_at',{ascending:true})
+    .limit(1)
+    .maybeSingle();
+
+  if(existing.error)return {error:existing.error};
+  if(existing.data)return {data:existing.data};
+
+  return await supabaseClient.from('chats')
+    .insert({user_id:currentUser.id,character_id:characterId})
+    .select('id')
+    .single();
+}
+
+async function loadChatHistory(chatId){
+  const result=await supabaseClient.from('messages')
+    .select('id,role,content,created_at')
+    .eq('chat_id',chatId)
+    .eq('user_id',currentUser.id)
+    .order('created_at',{ascending:true});
+
+  if(result.error){
+    document.getElementById('messages').innerHTML='<div class="chatEmpty">Не удалось загрузить историю.</div>';
+    return result;
+  }
+
+  renderChatMessages(result.data||[]);
+  return result;
+}
+
+async function openChat(name,avatar,characterId){
+  if(!currentUser){
+    openAuth();
+    document.getElementById('authMessage').textContent='Войди в аккаунт, чтобы начать и сохранять чаты.';
+    return;
+  }
+  if(!SUPABASE_READY){
+    alert('Supabase не подключён.');
+    return;
+  }
+
+  currentChatId=null;
+  currentChatCharacterId=characterId||name.toLowerCase();
+  document.getElementById('chatName').textContent=name;
+  document.getElementById('chatAvatar').textContent=avatar;
+  document.getElementById('messages').innerHTML='<div class="chatEmpty">Открываем чат…</div>';
+  document.getElementById('chatError').style.display='none';
+  showPage('chat');
+
+  const chat=await getOrCreateChat(currentChatCharacterId);
+  if(chat.error){
+    document.getElementById('messages').innerHTML='<div class="chatEmpty">Не удалось создать чат.</div>';
+    document.getElementById('chatError').textContent=chat.error.message;
+    document.getElementById('chatError').style.display='block';
+    return;
+  }
+
+  currentChatId=chat.data.id;
+
+  // Add the character greeting only to a brand-new empty chat.
+  const history=await loadChatHistory(currentChatId);
+  if(history.error)return;
+
+  if(!history.data?.length){
+    const character=characterData[currentChatCharacterId];
+    const greeting=character?.greeting||('Привет. Я '+name+'. Давай начнём нашу историю.');
+    const inserted=await supabaseClient.from('messages').insert({
+      chat_id:currentChatId,
+      user_id:currentUser.id,
+      role:'assistant',
+      content:greeting
+    });
+    if(!inserted.error) await loadChatHistory(currentChatId);
+  }
+
+  loadProfileStats();
+}
+
+async function sendMessage(){
+  const input=document.getElementById('chatInput');
+  const button=document.getElementById('sendButton');
+  const value=input.value.trim();
+  if(!value||!currentUser||!currentChatId)return;
+
+  button.disabled=true;
+  input.disabled=true;
+  document.getElementById('chatError').style.display='none';
+
+  const result=await supabaseClient.from('messages').insert({
+    chat_id:currentChatId,
+    user_id:currentUser.id,
+    role:'user',
+    content:value
+  });
+
+  if(result.error){
+    document.getElementById('chatError').textContent=result.error.message;
+    document.getElementById('chatError').style.display='block';
+    button.disabled=false;
+    input.disabled=false;
+    input.focus();
+    return;
+  }
+
+  input.value='';
+  await loadChatHistory(currentChatId);
+
+  // Ask the secure Supabase Edge Function for the character's AI reply.
+  const typing=document.createElement('div');
+  typing.className='msg';
+  typing.id='typingIndicator';
+  typing.textContent='Печатает…';
+  document.getElementById('messages').appendChild(typing);
+  document.getElementById('messages').scrollTop=document.getElementById('messages').scrollHeight;
+
+  const ai=await supabaseClient.functions.invoke('ai-chat',{
+    body:{
+      chat_id:currentChatId,
+      character_id:currentChatCharacterId
+    }
+  });
+
+  document.getElementById('typingIndicator')?.remove();
+
+  if(ai.error){
+    document.getElementById('chatError').textContent='Персонаж не смог ответить: '+(ai.error.message||'неизвестная ошибка');
+    document.getElementById('chatError').style.display='block';
+  }else if(ai.data?.reply){
+    // The Edge Function already stores the assistant message.
+    await loadChatHistory(currentChatId);
+  }else{
+    document.getElementById('chatError').textContent='Персонаж не вернул ответ.';
+    document.getElementById('chatError').style.display='block';
+  }
+
+  button.disabled=false;
+  input.disabled=false;
+  input.focus();
+  loadProfileStats();
+}
+
+
+
+const SUPABASE_READY = typeof supabaseClient !== 'undefined' && !!supabaseClient;
+let currentUser = null;
+let authMode = 'login';
+
+async function initAuth(){
+  if(!SUPABASE_READY){updateProfileUI(null);return;}
+
+  try{
+    const url = new URL(window.location.href);
+    const code = url.searchParams.get('code');
+    if(code){
+      const {error} = await supabaseClient.auth.exchangeCodeForSession(code);
+      if(error) console.warn('Velora auth callback:', error.message);
+      else{
+        url.searchParams.delete('code');
+        url.searchParams.delete('type');
+        window.history.replaceState({}, document.title, url.pathname + url.search + url.hash);
+      }
+    }
+  }catch(e){ console.warn('Velora auth callback error:', e); }
+
+  const {data:{session}} = await supabaseClient.auth.getSession();
+  currentUser = session?.user || null;
+  await updateProfileUI(currentUser);
+
+  supabaseClient.auth.onAuthStateChange(async (_event,session)=>{
+    currentUser=session?.user||null;
+    await updateProfileUI(currentUser);
+    if(currentUser) await syncFavoritesFromDB();
+    else renderFavorites([]);
+  });
+
+  if(currentUser) await syncFavoritesFromDB();
+}
+function openAuth(){document.getElementById('authModal').classList.add('open');document.getElementById('authModal').setAttribute('aria-hidden','false');}
+function closeAuth(){document.getElementById('authModal').classList.remove('open');document.getElementById('authModal').setAttribute('aria-hidden','true');}
+function toggleAuthMode(){
+  authMode=authMode==='login'?'signup':'login';
+  document.getElementById('authTitle').textContent=authMode==='login'?'Вход':'Создать аккаунт';
+  document.getElementById('authSubmit').textContent=authMode==='login'?'Войти':'Создать аккаунт';
+  document.getElementById('authSwitch').textContent=authMode==='login'?'Нет аккаунта? Создать':'Уже есть аккаунт? Войти';
+  document.getElementById('usernameWrap').style.display=authMode==='signup'?'block':'none';
+  document.getElementById('authSubtitle').textContent=authMode==='login'?'Войди, чтобы сохранять избранное и историю.':'Создай аккаунт Velora для сохранения прогресса.';
+  document.getElementById('authMessage').textContent='';
+}
+async function submitAuth(){
+  if(!SUPABASE_READY){document.getElementById('authMessage').textContent='Сначала подключи Supabase по инструкции в README.';return;}
+  const email=document.getElementById('authEmail').value.trim(),password=document.getElementById('authPassword').value,username=document.getElementById('authUsername').value.trim();
+  if(!email||!password){document.getElementById('authMessage').textContent='Заполни email и пароль.';return;}
+  const msg=document.getElementById('authMessage');msg.textContent='Загрузка…';
+  let result;
+  if(authMode==='signup'){
+    result=await supabaseClient.auth.signUp({email,password,options:{data:{username:username||email.split('@')[0]}}});
+    if(!result.error && result.data.user) msg.textContent=result.data.session?'Аккаунт создан.':'Проверь почту для подтверждения аккаунта.';
+  }else{
+    result=await supabaseClient.auth.signInWithPassword({email,password});
+    if(!result.error){
+      // Use the session returned directly by signInWithPassword.
+      // This makes the profile update immediately instead of waiting
+      // for the auth-state event.
+      currentUser=result.data?.user || null;
+      await updateProfileUI(currentUser);
+      if(currentUser) await syncFavoritesFromDB();
+      closeAuth();
+      showPage('profile');
+    }
+  }
+  if(result.error) msg.textContent=result.error.message;
+}
+async function logout(){
+  if(SUPABASE_READY) await supabaseClient.auth.signOut();
+  currentUser=null;updateProfileUI(null);showPage('home');
+}
+async function updateProfileUI(user){
+  const status=document.getElementById('profileStatus');
+  const guest=document.getElementById('guestProfile');
+  const profile=document.getElementById('userProfile');
+
+  if(!user){
+    status.textContent='Гость';
+    if(guest) guest.style.display='flex';
+    if(profile) profile.style.display='none';
+    return;
+  }
+
+  status.textContent='Аккаунт';
+  if(guest) guest.style.display='none';
+  if(profile) profile.style.display='grid';
+
+  let username=user.user_metadata?.username || user.email?.split('@')[0] || 'Пользователь';
+
+  if(SUPABASE_READY){
+    const {data} = await supabaseClient.from('profiles')
+      .select('username,avatar_url')
+      .eq('id',user.id)
+      .maybeSingle();
+
+    if(data?.username) username=data.username;
+
+    const name=document.getElementById('profileName');
+    const email=document.getElementById('profileEmail');
+    const avatar=document.getElementById('profileAvatar');
+    if(name) name.textContent=username;
+    if(email) email.textContent=user.email||'';
+    if(avatar) avatar.textContent=(data?.avatar_url && data.avatar_url.length<=4)?data.avatar_url:'👤';
+
+    const edit=document.getElementById('editUsername');
+    if(edit) edit.value=username;
+    await loadProfileStats();
+  }
+}
+
+async function loadProfileStats(){
+  if(!SUPABASE_READY||!currentUser)return;
+  const [fav,chats,chars]=await Promise.all([
+    supabaseClient.from('favorites').select('*',{count:'exact',head:true}).eq('user_id',currentUser.id),
+    supabaseClient.from('chats').select('*',{count:'exact',head:true}).eq('user_id',currentUser.id),
+    supabaseClient.from('characters').select('*',{count:'exact',head:true}).eq('owner_id',currentUser.id)
+  ]);
+  document.getElementById('favCount').textContent=fav.count||0;
+  document.getElementById('chatCount').textContent=chats.count||0;
+  document.getElementById('characterCount').textContent=chars.count||0;
+}
+
+function openEditProfile(){
+  if(!currentUser)return openAuth();
+  const modal=document.getElementById('editProfileModal');
+  document.getElementById('editUsername').value=document.getElementById('profileName').textContent||'';
+  document.getElementById('editProfileMessage').textContent='';
+  modal.classList.add('open');
+  modal.setAttribute('aria-hidden','false');
+  setTimeout(()=>document.getElementById('editUsername').focus(),50);
+}
+
+function closeEditProfile(){
+  const modal=document.getElementById('editProfileModal');
+  modal.classList.remove('open');
+  modal.setAttribute('aria-hidden','true');
+}
+
+async function saveProfile(){
+  if(!SUPABASE_READY||!currentUser)return;
+  const input=document.getElementById('editUsername'), msg=document.getElementById('editProfileMessage');
+  const username=input.value.trim();
+  if(username.length<2){msg.textContent='Имя должно содержать минимум 2 символа.';return;}
+  msg.textContent='Сохраняем…';
+  const {error}=await supabaseClient.from('profiles').update({username}).eq('id',currentUser.id);
+  if(error){msg.textContent=error.message;return;}
+  currentUser.user_metadata=currentUser.user_metadata||{};
+  currentUser.user_metadata.username=username;
+  document.getElementById('profileName').textContent=username;
+  msg.textContent='Профиль обновлён.';
+  setTimeout(closeEditProfile,500);
+}
+
+async function syncFavoritesFromDB(){
+  if(!SUPABASE_READY||!currentUser)return;
+  const {data,error}=await supabaseClient.from('favorites')
+    .select('character_id')
+    .eq('user_id',currentUser.id);
+
+  if(!error&&data){
+    saveFavorites(data.map(x=>x.character_id));
+    updateFavoritesUI();
+    loadProfileStats();
+  }
+}
+const characterData = {
+  'луна': {name:'Луна',avatar:'🌙',desc:'Загадочная собеседница с мягким характером.',messages:'3,77 млн',tags:'Тайна · Спокойный · История',greeting:'Привет. Я Луна. Рада познакомиться. С чего начнём нашу историю?'},
+  'каэль': {name:'Каэль',avatar:'⚔️',desc:'Странник из мира, где магия стала частью жизни.',messages:'464,3 тыс.',tags:'Фэнтези · Приключения',greeting:'Привет, путник. Давно тебя не было в этих краях.'},
+  'ария': {name:'Ария',avatar:'🎧',desc:'Музыкантка, которая всегда найдёт тему для разговора.',messages:'335,4 тыс.',tags:'Музыка · Спокойный · Дружелюбный',greeting:'Привет! Как насчёт хорошего разговора и новой музыки?'},
+  'нова': {name:'Нова',avatar:'🚀',desc:'Навигатор космического корабля с острым умом.',messages:'671,1 тыс.',tags:'Фантастика · Умный · История',greeting:'Связь установлена. Привет, путешественник. Куда держим курс?'}
+};
+let activeCategory='all', activeTags=[];
+
+function getFavorites(){
+  try{return JSON.parse(localStorage.getItem('velora_favorites')||'[]')}
+  catch(e){return[]}
+}
+function saveFavorites(list){
+  localStorage.setItem('velora_favorites',JSON.stringify(list));
+}
+function paintFavoriteButtons(){
+  const saved=new Set(getFavorites());
+  document.querySelectorAll('.fav[data-fav-id]').forEach(btn=>{
+    const on=saved.has(btn.dataset.favId);
+    btn.classList.toggle('saved',on);
+    btn.textContent=on?'★':'☆';
+    btn.setAttribute('aria-label',on?'Убрать из избранного':'Добавить в избранное');
+  });
+
+  const detail=document.getElementById('detailFav');
+  if(detail){
+    const id=(document.getElementById('characterTitle')?.textContent||'').trim().toLowerCase();
+    const on=saved.has(id);
+    detail.classList.toggle('saved',on);
+    detail.textContent=on?'★':'☆';
+  }
+}
+function updateFavoritesUI(){
+  paintFavoriteButtons();
+  renderFavorites(getFavorites());
+  const count=document.getElementById('favCount');
+  if(count) count.textContent=getFavorites().length;
+}
+async function toggleFavorite(event,id){
+  event.stopPropagation();
+
+  if(!currentUser){
+    openAuth();
+    document.getElementById('authMessage').textContent='Войди в аккаунт, чтобы сохранять избранное.';
+    return;
+  }
+
+  const list=getFavorites();
+  const saved=list.includes(id);
+
+  // Optimistic UI.
+  const next=saved ? list.filter(x=>x!==id) : [...list,id];
+  saveFavorites(next);
+  updateFavoritesUI();
+
+  const result=await toggleFavoriteDB(id,saved);
+  if(result.error){
+    // Roll back if the database rejected the change.
+    saveFavorites(list);
+    updateFavoritesUI();
+    document.getElementById('authMessage').textContent='Не удалось сохранить избранное. Попробуй ещё раз.';
+    return;
+  }
+
+  await syncFavoritesFromDB();
+}
+function renderFavorites(list=getFavorites()){
+ const box=document.getElementById('favoritesList'),empty=document.getElementById('favoritesEmpty'); if(!box)return;
+ box.innerHTML='';
+ list.forEach(id=>{const c=characterData[id];if(!c)return;const el=document.createElement('div');el.className='favItem';el.onclick=()=>openCharacter(c.name,c.avatar,c.desc,c.messages,c.tags);el.innerHTML='<span class="miniAvatar">'+c.avatar+'</span><div><b>'+c.name+'</b><small>💬 '+c.messages+'</small></div>';box.appendChild(el)});
+ if(empty){empty.style.display=list.length?'none':'block';if(!list.length)empty.textContent=currentUser?'Твои сохранённые персонажи появятся здесь.':'Войди в аккаунт, чтобы сохранять избранных персонажей между устройствами.';}
+}
+async function openCharacter(name,avatar,desc,messages,tags){
+  document.getElementById('characterTitle').textContent=name;
+  document.getElementById('characterBigAvatar').textContent=avatar;
+  document.getElementById('characterDescription').textContent=desc;
+  document.getElementById('characterMessages').textContent=messages;
+  const id=name.toLowerCase();
+  document.getElementById('characterFavs').textContent=getFavorites().includes(id)?'В избранном':'0';
+  document.getElementById('characterTags').innerHTML=tags.split(' · ').map(t=>'<span>'+t+'</span>').join('');
+  showPage('character');
+  paintFavoriteButtons();
+
+  if(SUPABASE_READY){
+    const {data}=await supabaseClient.from('characters').select('message_count').eq('id',id).maybeSingle();
+    if(data?.message_count!=null){
+      const count=Number(data.message_count);
+      const formatted=count>=1000000?(count/1000000).toFixed(2).replace('.',',')+' млн':
+        count>=1000?(count/1000).toFixed(1).replace('.',',')+' тыс.':String(count);
+      document.getElementById('characterMessages').textContent=formatted;
+    }
+  }
+}
+async function toggleDetailFavorite(){
+  const id=(document.getElementById('characterTitle')?.textContent||'').trim().toLowerCase();
+  if(!id)return;
+  await toggleFavorite({stopPropagation(){}},id);
+  const fav=document.getElementById('characterFavs');
+  if(fav) fav.textContent=getFavorites().includes(id)?'В избранном':'0';
+}
+function startCharacterChat(){const n=document.getElementById('characterTitle').textContent,a=document.getElementById('characterBigAvatar').textContent;openChat(n,a,n.toLowerCase())}
+function toggleTags(){document.getElementById('tagPanel').classList.toggle('open')}
+function toggleTagFilter(btn,tag){btn.classList.toggle('selected');activeTags=Array.from(document.querySelectorAll('.tagPanel button.selected')).map(x=>x.dataset.filter);applyFilters()}
+function setCategory(btn,cat){document.querySelectorAll('.tabs .tab').forEach(x=>x.classList.remove('active'));btn.classList.add('active');activeCategory=cat;applyFilters()}
+function goHomeCategory(cat){showPage('home');const btn=Array.from(document.querySelectorAll('.tabs .tab')).find(x=>x.dataset.category===cat);if(btn)setCategory(btn,cat)}
+function applyFilters(){
+ const q=(document.getElementById('search')?.value||'').toLowerCase(),cards=Array.from(document.querySelectorAll('#characterGrid .card'));let shown=0;
+ cards.forEach(c=>{const okName=!q||c.dataset.name.includes(q),okCat=activeCategory==='all'||c.dataset.category===activeCategory,okTags=!activeTags.length||activeTags.every(t=>c.dataset.tags.includes(t));const ok=okName&&okCat&&okTags;c.style.display=ok?'':'none';if(ok)shown++});
+ const rc=document.getElementById('resultCount');if(rc)rc.textContent=shown+' '+(shown===1?'персонаж':'персонажа');
+ document.getElementById('noResults').style.display=shown?'none':'block';
+}
+function sortCards(type){
+ const grid=document.getElementById('characterGrid');const cards=Array.from(grid.children);
+ cards.sort((a,b)=>type==='messages'?Number(b.dataset.messages)-Number(a.dataset.messages):type==='new'?Number(a.dataset.new)-Number(b.dataset.new):Number(b.dataset.messages)-Number(a.dataset.messages));
+ cards.forEach(c=>grid.appendChild(c));applyFilters();
+}
+function filterCards(){applyFilters();}
+updateFavoritesUI(); applyFilters(); initAuth();
+</script>
+</body>
+</html>
