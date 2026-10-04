@@ -2,8 +2,8 @@
 // Put ONLY your public project URL and PUBLISHABLE key here.
 // Never put a Supabase secret/service_role key in this file.
 
-const VELORA_SUPABASE_URL = "PASTE_YOUR_SUPABASE_URL_HERE";
-const VELORA_SUPABASE_PUBLISHABLE_KEY = "PASTE_YOUR_SUPABASE_PUBLISHABLE_KEY_HERE";
+const VELORA_SUPABASE_URL = "https://rsneuogdincsqflqaqqv.supabase.co";
+const VELORA_SUPABASE_PUBLISHABLE_KEY = "sb_publishable_6EnyT_urYcFA-rYVgS8g9w_XZrkAv3c";
 
 let supabaseClient = null;
 if (
